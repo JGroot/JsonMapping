@@ -1,0 +1,70 @@
+﻿@page "/nested-list"
+
+@using System.Linq;
+
+@inject HttpClient httpClient;
+
+<h3>Nested List Example</h3>
+<p>Various manipulations of an object that contains a list of object</p>
+<hr/>
+<p>Original Model</p>
+<pre><code>
+        @modelJson
+ </code></pre>
+<button class="btn btn-primary" @onclick="Flatten">Flatten Model</button>
+<button class="btn btn-primary" @onclick="ClearFlatten">Clear</button>
+<br />
+<br />
+@if(!string.IsNullOrWhiteSpace(flatJson))
+{
+    <pre><code>
+            @flatJson
+     </code></pre>
+}
+
+@code {
+    JsonSerializerOptions options;
+    private NestedListTop model;
+    private List<FlatListViewModel> flats;
+
+    private string modelJson;
+    private string flatJson;
+
+    protected override async Task OnInitializedAsync()
+    {
+        options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+        var response = await httpClient.GetAsync("sample-data/nested-list.json");
+        modelJson = await response.Content.ReadAsStringAsync();
+        model = await response.Content.ReadFromJsonAsync<NestedListTop>();
+    }
+
+    private void Flatten()
+    {
+        flats = new List<FlatListViewModel>();
+
+        foreach(var item in model.SecondLayersList)
+        {
+            var flat = new FlatListViewModel()
+                {
+                    TopLayerString = model.TopLayerString,
+                    SecondLayerId = item.Id,
+                    SecondLayerString = item.SecondLayerString
+                };
+
+            flats.Add(flat);
+        }
+
+        flatJson = JsonSerializer.Serialize(flats, options);
+    }
+
+    private void ClearFlatten()
+    {
+        flatJson = string.Empty;
+    }
+}

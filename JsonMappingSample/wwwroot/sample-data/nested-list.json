@@ -1,0 +1,26 @@
+﻿{
+    "id": 1,
+    "topLayerString": "Top Layer String",
+    "secondLayersList": [
+        {
+            "id": 1,
+            "secondLayerString": "Second Layer String 1"
+        },
+        {
+            "id": 2,
+            "secondLayerString": "Second Layer String 2"
+        },
+        {
+            "id": 3,
+            "secondLayerString": "Second Layer String 3"
+        },
+        {
+            "id": 4,
+            "secondLayerString": "Second Layer String 4"
+        },
+        {
+            "id": 5,
+            "secondLayerString": "Second Layer String 5"
+        }
+    ]
+}

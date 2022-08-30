@@ -1,0 +1,54 @@
+﻿@page "/nested-object"
+
+@inject HttpClient httpClient;
+
+<h3>First Example</h3>
+<p>Flattens an object that contains a nested object</p>
+    <hr />
+    <p>Original Model</p>
+    <pre><code>
+        @modelJson
+    </code></pre>
+<button class="btn btn-primary" @onclick="MapToNewModel">Flatten Model</button>
+<br/><br/>
+@if(viewModel != null)
+{
+    <p>View Model</p>
+     <pre><code>
+        @vmJson
+    </code></pre>
+}
+
+
+@code {
+    JsonSerializerOptions options;
+    private NestedObjectModelTop model;
+    private NestedObjectViewModel viewModel;
+    private string modelJson;
+    private string vmJson;
+
+    protected override async Task OnInitializedAsync()
+    {
+        options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+        var response = await httpClient.GetAsync("sample-data/nested-object.json");
+        modelJson = await response.Content.ReadAsStringAsync();
+        model = await response.Content.ReadFromJsonAsync<NestedObjectModelTop>();
+    }
+
+    private void MapToNewModel()
+    {
+        viewModel = new()
+            {
+                TopLayerString = model.TopLayerString,
+                SecondLayerString = model.SecondLayer.SecondLayerString
+            };
+
+        vmJson = JsonSerializer.Serialize(viewModel, options);
+    }
+}

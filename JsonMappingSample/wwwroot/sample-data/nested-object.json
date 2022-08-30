@@ -1,0 +1,8 @@
+﻿{
+    "id": 1,
+    "topLayerString": "Top Layer String",
+    "secondLayer": {
+        "id": 1,
+        "secondLayerString": "Second Layer String"
+    }
+}
